@@ -1,0 +1,42 @@
+services:
+  nestjs:
+    build: .
+    ports:
+      - 4000:3000
+    env_file:
+      - .env
+    volumes:
+      - ./public:/app/public
+    networks:
+      - backend
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: "1234567"
+      MARIADB_DATABASE: backend_docker
+      MARIADB_USER: nestjs01
+      MARIADB_PASSWORD: "123456"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+  redis:
+    image: redis:alpine
+    restart: always 
+    networks:
+      - backend
+    
+volumes:
+  db-data:    
+
+networks:
+  backend:
+    driver: bridge
